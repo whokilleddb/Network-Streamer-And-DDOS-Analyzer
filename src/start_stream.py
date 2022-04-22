@@ -37,6 +37,7 @@ def check_corrupted_video_file(videofile):
 # Function to start streams
 def start_stream(videofile,ip="127.0.0.1", port="2300"):
     """ Function to start video stream over UDP port"""
+    
     console = Console()
 
     # Check if Video file is OK
@@ -79,22 +80,29 @@ def start_stream(videofile,ip="127.0.0.1", port="2300"):
         f="flv")
     .run(capture_stdout=True, capture_stderr=True, quiet=True))
 
-    try:
-        with console.status(f"[bold]Streaming ▶️", spinner="runner") as status: 
-            while True:
+    while True:
+        try:
+            with console.status(f"[bold]Streaming ▶️", spinner="runner") as statuss:
                 process()
 
-    except KeyboardInterrupt:
-        print("[bold][[red]![/red]] Bye!")
+        except KeyboardInterrupt:
+            print("[bold][[red]![/red]] Bye!")
+            return False
 
-    except ffmpeg.Error as e:
-        print("[bold][[red]![/red]] Streaming Error!", file=sys.stderr)
-        print(f"[bold][[red]![/red]] Stderr:\n{e.stderr.decode('utf8')}", file=sys.stderr)
-        return False
+        except ffmpeg.Error as e:
+            print("[bold][[red]![/red]] Streaming Error!", file=sys.stderr)
+            print(f"[bold][[red]![/red]] Stderr:\n{e.stderr.decode('utf8')}", file=sys.stderr)
+            continue
+        
+        except ffmpeg._run.Error as e:
+            print("[bold][[red]![/red]] Streaming Error!", file=sys.stderr)
+            print(f"[bold][[red]![/red]] Stderr:\n{e.stderr.decode('utf8')}", file=sys.stderr)
+            continue
 
-    except Exception as e:
-        print(f"[bold][[red]![/red]] Error occured as: {e}", ":face_with_thermometer:",file=sys.stderr)
-        return False
+        except Exception as e:
+            print(f"[bold][[red]![/red]] Error occured as: {e}", ":face_with_thermometer:",file=sys.stderr)
+            break
+
 
 # main function to handle cases when the file is invoked directly
 def main():
