@@ -80,7 +80,7 @@ def start_stream(videofile,ip="127.0.0.1", port="2300"):
     .run(quiet=True))
 
     try:
-        with console.status(f"[bold] Streaming ▶️", spinner="runner") as status: 
+        with console.status(f"[bold]Streaming ▶️", spinner="runner") as status: 
             while True:
                 process()
 
