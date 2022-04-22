@@ -87,10 +87,6 @@ def start_stream(videofile,ip="127.0.0.1", port="2300"):
     except KeyboardInterrupt:
         print("[bold][[red]![/red]] Bye!")
 
-    except ffmpeg._run.Error:
-        with console.status(f"[bold] Restarting stream ⚙️", spinner="runner") as status: 
-            process()   # Restart in case of error
-
     except Exception as e:
         print(f"[bold][[red]![/red]] Error occured as: {e}", ":face_with_thermometer:",file=sys.stderr)
         return False
