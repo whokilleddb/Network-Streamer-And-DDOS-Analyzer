@@ -77,7 +77,7 @@ def start_stream(videofile,ip="127.0.0.1", port="2300"):
         codec="copy", 
         listen=1,
         f="flv")
-    .run(quiet=True))
+    .run(capture_stdout=True, capture_stderr=True, quiet=True))
 
     try:
         with console.status(f"[bold]Streaming ▶️", spinner="runner") as status: 
@@ -86,6 +86,11 @@ def start_stream(videofile,ip="127.0.0.1", port="2300"):
 
     except KeyboardInterrupt:
         print("[bold][[red]![/red]] Bye!")
+
+    except ffmpeg.Error as e:
+        print("[bold][[red]![/red]] Streaming Error!", file=sys.stderr)
+        print(f"[bold][[red]![/red]] Stderr:\n{e.stderr.decode('utf8')}", file=sys.stderr)
+        return False
 
     except Exception as e:
         print(f"[bold][[red]![/red]] Error occured as: {e}", ":face_with_thermometer:",file=sys.stderr)

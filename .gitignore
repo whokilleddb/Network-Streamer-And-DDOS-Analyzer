@@ -2,4 +2,4 @@ __pycache__/
 env/
 build/
 *.egg-info/
-test.*
+test.mp4
