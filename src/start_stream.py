@@ -37,7 +37,6 @@ def check_corrupted_video_file(videofile):
 # Function to start streams
 def start_stream(videofile,ip="127.0.0.1", port="2300"):
     """ Function to start video stream over UDP port"""
-    
     console = Console()
 
     # Check if Video file is OK
@@ -65,11 +64,20 @@ def start_stream(videofile,ip="127.0.0.1", port="2300"):
         print("[bold][[red]![/red]] Invalid IP Address:", ip, ":x:", file=sys.stderr)
         return False
 
+    # Check if Port is available
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.bind((ip,port))
+        s.listen()
+        s.close()
+    except socket.error:
+        print("[bold][[red]![/red]] Socket In Use")
+        return False
+
     stream_url = f"http://{ip}:{port}"
     print(f"[bold][[green]+[/green]] Streaming:", videofile)
     print(f"[bold][[green]+[/green]] Starting URL: {stream_url}", ":movie_camera:")
 
-    video_to_stream = ffmpeg.input(videofile)
     process= lambda : (
     ffmpeg
     .input(videofile)
@@ -93,7 +101,7 @@ def start_stream(videofile,ip="127.0.0.1", port="2300"):
             print("[bold][[red]![/red]] Streaming Error!", file=sys.stderr)
             print(f"[bold][[red]![/red]] Stderr:\n{e.stderr.decode('utf8')}", file=sys.stderr)
             continue
-        
+
         except ffmpeg._run.Error as e:
             print("[bold][[red]![/red]] Streaming Error!", file=sys.stderr)
             print(f"[bold][[red]![/red]] Stderr:\n{e.stderr.decode('utf8')}", file=sys.stderr)
@@ -112,7 +120,7 @@ def main():
     parser.add_argument('-i', metavar="IP", nargs='?', default="127.0.0.1", const="127.0.0.1", help="IP to stream UDP over")
     args = parser.parse_args()
 
-    print("[bold][[green]![green]] [red]Network [cyan]Video [yellow]Streamer")
+    print("[bold][[green]![/green]] [red]Network [cyan]Video [yellow]Streamer")
     start_stream(args.VIDEO, args.i, args.p)
 
 
